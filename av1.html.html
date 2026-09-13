@@ -1,0 +1,679 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>En attendant le 25 — Calendriers de l'Avent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Passion+One:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#17151d; --paper:#fbf5e8; --cream:#fffaf5; --yellow:#ffd84d;
+  --pink:#ff78aa; --violet:#6f5cff; --mint:#a8e6cf; --red:#ff5f61;
+  --border:3px solid var(--ink); --shadow:8px 8px 0 var(--ink);
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{
+  color:var(--ink); background:
+    linear-gradient(rgba(20,33,61,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(20,33,61,.05) 1px,transparent 1px),var(--paper);
+  background-size:24px 24px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+}
+button,a{-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit}
+.app{height:100dvh;display:grid;grid-template-rows:auto 1fr auto;overflow:hidden}
+
+.topbar{padding:clamp(10px,2vh,18px) clamp(12px,3vw,34px) 8px}
+.brandline{display:block;margin-bottom:10px;overflow:hidden}
+.year{position:relative;width:100%;display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:clamp(10px,1.6vw,22px);font-family:Impact,"Arial Narrow",Arial Black,sans-serif;text-transform:uppercase;white-space:nowrap}
+.year strong{font-size:clamp(.72rem,1.35vw,1.05rem);line-height:.86;letter-spacing:-.055em;background:var(--yellow);border:3px solid var(--ink);padding:.48em .65em .42em;box-shadow:5px 5px 0 var(--ink);transform:rotate(-1.2deg);text-align:left}
+.year span{display:block;width:100%;font-size:clamp(1.8rem,5.3vw,4.4rem);line-height:.78;letter-spacing:-.07em;text-align:center;padding:.02em .02em .08em;border-bottom:clamp(4px,.48vw,7px) solid var(--pink);transform:scaleX(1.02);transform-origin:center;font-weight:900}
+.themes{display:flex;gap:7px;justify-content:center;overflow-x:auto;scrollbar-width:none;padding:2px 3px 5px}
+.themes::-webkit-scrollbar{display:none}
+.theme{border:2px solid var(--ink);border-radius:999px;background:var(--cream);padding:6px 11px;font-weight:900;font-size:clamp(.65rem,1.3vw,.82rem);white-space:nowrap;cursor:pointer}
+.theme.active{background:var(--ink);color:white;box-shadow:3px 3px 0 var(--yellow)}
+.filterline{display:flex;align-items:center;justify-content:center;gap:8px;min-width:0}.searchbox{display:flex;align-items:center;flex:0 0 auto}.search-toggle{border:2px solid var(--ink);border-radius:999px;background:var(--pink);padding:6px 11px;font-weight:1000;font-size:clamp(.65rem,1.3vw,.82rem);cursor:pointer;white-space:nowrap}.search-input{width:0;opacity:0;padding:0;border:0;outline:0;background:var(--cream);font:inherit;font-weight:800;transition:width .18s ease,opacity .18s ease,padding .18s ease}.searchbox.open .search-input{width:min(22vw,220px);opacity:1;border:2px solid var(--ink);border-radius:999px;padding:6px 10px;margin-left:6px}
+
+.stage{position:relative;min-height:0;display:grid;place-items:center;padding:8px clamp(50px,7vw,100px) 12px}
+.card{width:min(860px,100%);height:min(650px,100%);display:grid;grid-template-columns:minmax(0,1.18fr) minmax(220px,.82fr);border:var(--border);border-radius:26px;background:var(--cream);box-shadow:var(--shadow);overflow:hidden}
+.visual{position:relative;display:grid;place-items:center;border-right:var(--border);overflow:hidden;cursor:pointer;text-decoration:none;color:inherit;min-width:0}
+.visual.beauty{background:radial-gradient(circle at 18% 17%,#f1c9d6 0 11%,transparent 12%),linear-gradient(135deg,#ff77aa,#ffab90)}
+.visual.geek{background:radial-gradient(circle at 77% 17%,#b9d4c4 0 11%,transparent 12%),linear-gradient(135deg,#1c2848,#6677a8)}
+.mock{width:min(74%,390px);aspect-ratio:.9;border:4px solid var(--ink);box-shadow:12px 12px 0 var(--ink);padding:clamp(14px,2.2vw,22px);transform:rotate(-3deg);background:#fff1f5;display:flex;flex-direction:column;justify-content:space-between}
+.geek .mock{background:#263451;color:white;transform:rotate(3deg)}
+.mock-title{font-family:Arial Black,Impact,sans-serif;font-size:clamp(2.1rem,5vw,4.6rem);line-height:.83;letter-spacing:-.07em}
+.doors{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
+.doors i{display:grid;place-items:center;aspect-ratio:1;border:2px solid currentColor;font-style:normal;font-weight:900;font-size:clamp(.48rem,1vw,.72rem);background:rgba(255,255,255,.35)}
+.badge{display:none}
+.details{display:flex;flex-direction:column;justify-content:center;padding:clamp(18px,3vw,38px);min-width:0}
+.kicker{display:inline-block;align-self:flex-start;border:2px solid var(--ink);background:var(--mint);padding:5px 8px;font-size:.68rem;font-weight:1000;margin-bottom:14px;transform:rotate(-1deg)}
+h1{font-family:Arial Black,Impact,sans-serif;font-size:clamp(2rem,4vw,3.65rem);line-height:.92;letter-spacing:-.06em;margin:0 0 12px;text-transform:uppercase}
+.desc{font-size:clamp(.75rem,1.4vw,.95rem);font-weight:700;line-height:1.45;margin:0 0 18px}
+.price{font-family:Arial Black,Impact,sans-serif;font-size:clamp(1.45rem,2.8vw,2.2rem);letter-spacing:-.04em;margin-bottom:16px}
+.info{align-self:flex-start;text-decoration:none;border:var(--border);background:var(--violet);color:white;box-shadow:6px 6px 0 var(--ink);padding:11px 14px;font-weight:1000;font-size:.86rem;transition:.12s ease}
+.info:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--ink)}
+
+.arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:48px;height:48px;border:var(--border);border-radius:50%;background:var(--yellow);box-shadow:5px 5px 0 var(--ink);display:grid;place-items:center;font-size:1.35rem;font-weight:1000;cursor:pointer}
+.arrow:hover{transform:translateY(-50%) translate(2px,2px);box-shadow:3px 3px 0 var(--ink)}
+.arrow.prev{left:clamp(8px,2vw,28px)}
+.arrow.next{right:clamp(8px,2vw,28px);animation:nextPulse 1.35s ease-in-out infinite}
+.arrow.next:hover,.arrow.next:focus-visible{animation:none}
+@keyframes nextPulse{0%,100%{transform:translateY(-50%) scale(1);box-shadow:5px 5px 0 var(--ink)}50%{transform:translateY(-50%) scale(1.13);box-shadow:7px 7px 0 var(--pink)}}
+@media (prefers-reduced-motion:reduce){.arrow.next{animation:none}}
+
+.footer{padding:6px 14px calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:end;font-size:clamp(.52rem,1.1vw,.68rem);line-height:1.25;opacity:.66;white-space:normal;overflow:visible}
+.footer-left{text-align:left}
+.footer-right{text-align:right}
+.footer a{color:inherit;text-decoration:none;border-bottom:1px solid currentColor}
+.footer a:hover{opacity:1}
+
+@media(max-width:720px){
+  .topbar{padding:8px 9px 4px}
+  .brandline{margin-bottom:7px}
+  .year{gap:7px}
+  .year strong{font-size:clamp(.48rem,2.65vw,.68rem);line-height:.9;box-shadow:3px 3px 0 var(--ink);border-width:2px;padding:.42em .55em .38em}
+  .year span{font-size:clamp(1.08rem,6.15vw,1.58rem);line-height:.8;letter-spacing:-.075em;border-bottom-width:3px;transform:none}
+  .theme{font-size:.58rem;padding:4px 7px}
+  .filterline{justify-content:flex-start;gap:5px}
+  .themes{justify-content:flex-start;gap:5px;min-width:0}
+  .search-toggle{font-size:.58rem;padding:4px 7px}
+  .searchbox.open .search-input{width:28vw;max-width:120px;padding:4px 7px;font-size:.58rem}
+  .stage{padding:5px 42px 8px}
+  .card{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto;width:100%;height:100%;max-height:none;border-radius:18px;box-shadow:5px 5px 0 var(--ink)}
+  .visual{border-right:0;border-bottom:var(--border);min-height:0}
+  .mock{width:min(56vw,250px);max-height:90%;padding:10px;border-width:3px;box-shadow:7px 7px 0 var(--ink)}
+  .mock-title{font-size:clamp(1.55rem,9vw,2.55rem)}
+  .doors{gap:3px}
+  .doors i{border-width:1px;font-size:.42rem}
+  .details{padding:9px 11px 11px;display:grid;grid-template-columns:1fr auto;grid-template-areas:"kicker price" "title price" "desc info";gap:4px 9px;align-items:center}
+  .kicker{grid-area:kicker;margin:0;font-size:.48rem;padding:3px 5px}
+  h1{grid-area:title;font-size:clamp(1.15rem,5.8vw,1.8rem);margin:0;line-height:.9}
+  .desc{grid-area:desc;font-size:.56rem;line-height:1.25;margin:2px 0 0}
+  .price{grid-area:price;margin:0;font-size:clamp(1rem,5.4vw,1.45rem);align-self:start;text-align:right}
+  .info{grid-area:info;padding:7px 8px;font-size:.58rem;border-width:2px;box-shadow:3px 3px 0 var(--ink);white-space:nowrap}
+  .arrow{width:34px;height:34px;border-width:2px;box-shadow:3px 3px 0 var(--ink);font-size:.95rem}
+  .arrow.prev{left:5px}.arrow.next{right:5px}
+  .footer{font-size:.45rem;padding-top:4px;padding-bottom:calc(5px + env(safe-area-inset-bottom));gap:8px}
+  .footer-left,.footer-right{line-height:1.2}
+}
+@media(max-height:620px) and (min-width:721px){
+  .topbar{padding-top:7px}.brandline{margin-bottom:4px}.theme{padding:4px 8px}
+  .stage{padding-top:4px;padding-bottom:6px}
+  .card{height:100%}
+  .mock{width:min(62%,300px)}
+  .details{padding:16px 22px}.desc{margin-bottom:10px}.price{margin-bottom:10px}
+}
+
+/* --- règle absolue : tout tient dans l’écran, sans scroll --- */
+html,body{width:100%;height:100%;margin:0;overflow:hidden;overscroll-behavior:none;}
+body{min-height:100svh;height:100dvh;max-height:100dvh;}
+*{box-sizing:border-box;}
+main,.app,.page,.screen,.viewport{max-height:100dvh;overflow:hidden;}
+img{max-width:100%;max-height:100%;object-fit:contain;}
+
+/* adaptation aussi selon la hauteur disponible */
+@media (max-height: 800px){
+  .brand,.title,.hero-title,h1{font-size:clamp(1.8rem,7vh,4.8rem)!important;line-height:.88!important;}
+  .themes,.filterline{gap:4px!important;}
+  .theme,.search-toggle{padding:4px 7px!important;font-size:clamp(.52rem,1.5vh,.72rem)!important;}
+  .card,.product-card,.calendar-card{max-height:62vh!important;}
+  .footer,footer{font-size:clamp(.48rem,1.3vh,.68rem)!important;line-height:1.05!important;}
+}
+@media (max-height: 650px){
+  header{padding-top:4px!important;padding-bottom:2px!important;}
+  .brand,.title,.hero-title,h1{font-size:clamp(1.45rem,6.2vh,3.6rem)!important;}
+  .card,.product-card,.calendar-card{max-height:56vh!important;}
+  .arrow{transform:translateY(-50%) scale(.88)!important;}
+}
+@media (max-height: 540px){
+  .brand,.title,.hero-title,h1{font-size:clamp(1.2rem,5.5vh,2.8rem)!important;}
+  .theme,.search-toggle{font-size:.5rem!important;padding:3px 6px!important;}
+  .card,.product-card,.calendar-card{max-height:50vh!important;}
+  .footer,footer{font-size:.45rem!important;}
+}
+
+
+/* =========================================================
+   VERROUILLAGE VIEWPORT — aucune zone ne doit défiler
+   ========================================================= */
+html,body{
+  width:100%;
+  height:100%;
+  max-width:100vw;
+  max-height:100dvh;
+  overflow:hidden !important;
+}
+body{position:fixed;inset:0}
+.app{
+  width:100vw;
+  height:100dvh;
+  min-height:100dvh;
+  max-height:100dvh;
+  overflow:hidden;
+  grid-template-rows:auto minmax(0,1fr) auto;
+}
+
+/* Le bandeau ne peut jamais élargir la page */
+.topbar,.brandline,.year,.filterline,.themes,.searchbox{min-width:0;max-width:100%}
+.topbar{overflow:hidden}
+.filterline{
+  width:100%;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:6px;
+  overflow:hidden;
+}
+.themes{
+  width:100%;
+  display:flex;
+  justify-content:stretch;
+  align-items:center;
+  gap:clamp(3px,.7vw,7px);
+  overflow:hidden;
+  padding:2px 1px 5px;
+}
+.theme{
+  flex:1 1 0;
+  min-width:0;
+  padding:5px clamp(4px,.8vw,10px);
+  font-size:clamp(.52rem,1.3vw,.78rem);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  text-align:center;
+}
+.searchbox{max-width:min(24vw,135px)}
+.search-toggle{
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  padding:5px 9px;
+}
+.searchbox.open{
+  position:absolute;
+  left:clamp(8px,2vw,30px);
+  right:clamp(8px,2vw,30px);
+  z-index:40;
+  max-width:none;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  background:var(--paper);
+  padding:4px;
+  border-radius:999px;
+}
+.searchbox.open .search-input{
+  width:100% !important;
+  max-width:none !important;
+  min-width:0;
+}
+
+/* Le calendrier et les flèches restent obligatoirement dans l'écran */
+.stage{
+  width:100%;
+  max-width:100vw;
+  min-width:0;
+  min-height:0;
+  overflow:hidden;
+  padding:
+    clamp(5px,1vh,10px)
+    clamp(44px,7vw,100px)
+    clamp(5px,1vh,10px);
+}
+.card{
+  width:min(860px,100%);
+  max-width:100%;
+  height:min(650px,100%);
+  max-height:100%;
+  min-height:0;
+  min-width:0;
+}
+.visual,.details{min-width:0;min-height:0}
+.arrow{z-index:30}
+
+/* Footer : toujours visible, jamais coupé */
+.footer{
+  width:100%;
+  min-width:0;
+  max-width:100vw;
+  grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);
+  padding-left:clamp(8px,2vw,18px);
+  padding-right:clamp(8px,2vw,18px);
+  overflow:hidden;
+}
+.footer-left,.footer-right{
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+
+/* Téléphone portrait */
+@media (max-width:720px){
+  .topbar{padding:6px 7px 3px}
+  .brandline{margin-bottom:5px}
+  .year{
+    grid-template-columns:auto minmax(0,1fr);
+    gap:6px;
+  }
+  .year strong{
+    font-size:clamp(.42rem,2.15vw,.62rem);
+    padding:.38em .48em .34em;
+  }
+  .year span{
+    font-size:clamp(.96rem,5.55vw,1.48rem);
+    overflow:hidden;
+  }
+
+  .filterline{gap:4px}
+  .themes{gap:3px;padding-bottom:3px}
+  .theme{
+    padding:4px 2px !important;
+    font-size:clamp(.46rem,1.95vw,.60rem) !important;
+    border-width:2px;
+    letter-spacing:-.03em;
+  }
+  .searchbox{max-width:22vw}
+  .search-toggle{
+    width:100%;
+    padding:4px 4px !important;
+    font-size:clamp(.46rem,1.95vw,.60rem) !important;
+  }
+
+  .stage{
+    padding:5px 41px 5px;
+    place-items:stretch center;
+  }
+  .card{
+    width:100%;
+    height:100%;
+    max-height:100% !important;
+    grid-template-rows:minmax(0,1fr) auto;
+  }
+  .visual{
+    min-height:0;
+  }
+  .mock{
+    width:min(55vw,235px);
+    max-width:82%;
+    max-height:88%;
+  }
+  .details{
+    padding:8px 10px 10px;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:3px 7px;
+  }
+  .kicker{font-size:clamp(.42rem,1.75vw,.50rem)}
+  h1{font-size:clamp(1.05rem,5vw,1.55rem)!important}
+  .desc{
+    font-size:clamp(.48rem,1.9vw,.57rem);
+    line-height:1.2;
+    max-width:100%;
+  }
+  .price{font-size:clamp(.95rem,4.7vw,1.3rem)}
+  .info{font-size:clamp(.50rem,2vw,.60rem);padding:6px 7px}
+
+  .arrow{
+    width:34px;
+    height:34px;
+  }
+  .arrow.prev{left:4px}
+  .arrow.next{right:4px}
+
+  .footer{
+    grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);
+    gap:6px;
+    font-size:clamp(.40rem,1.65vw,.48rem) !important;
+    line-height:1.12 !important;
+    padding:3px 7px calc(4px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Très petits téléphones : thèmes sur deux rangées, sans défilement */
+@media (max-width:430px){
+  .filterline{
+    grid-template-columns:minmax(0,1fr) auto;
+    align-items:stretch;
+  }
+  .themes{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-template-rows:repeat(2,auto);
+    gap:3px;
+  }
+  .theme{
+    width:100%;
+    font-size:clamp(.42rem,2.4vw,.55rem) !important;
+    padding:3px 2px !important;
+  }
+  .searchbox{
+    max-width:82px;
+    align-self:stretch;
+  }
+  .search-toggle{
+    height:100%;
+    white-space:normal;
+    line-height:1.05;
+  }
+  .stage{padding-left:38px;padding-right:38px}
+  .footer{font-size:clamp(.39rem,1.8vw,.46rem)!important}
+}
+
+/* Écrans très bas / mode paysage */
+@media (max-height:650px){
+  .topbar{padding-top:3px;padding-bottom:2px}
+  .brandline{margin-bottom:3px}
+  .year strong{font-size:clamp(.40rem,1.8vh,.56rem)}
+  .year span{font-size:clamp(.88rem,4.2vh,1.35rem)}
+  .theme,.search-toggle{
+    font-size:clamp(.40rem,1.7vh,.55rem)!important;
+    padding:2px 4px!important;
+  }
+  .stage{padding-top:3px;padding-bottom:3px}
+  .footer{
+    padding-top:2px;
+    padding-bottom:calc(2px + env(safe-area-inset-bottom));
+    font-size:clamp(.38rem,1.45vh,.45rem)!important;
+  }
+}
+
+/* Paysage téléphone : carte en deux colonnes pour utiliser la largeur */
+@media (max-height:520px) and (min-width:560px){
+  .card{
+    grid-template-columns:minmax(0,1.18fr) minmax(210px,.82fr);
+    grid-template-rows:1fr;
+  }
+  .visual{border-right:var(--border);border-bottom:0}
+  .details{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:8px 12px;
+  }
+  .kicker{margin-bottom:5px}
+  h1{margin-bottom:5px}
+  .desc{margin-bottom:6px}
+  .price{margin-bottom:6px}
+  .mock{width:min(52%,240px)}
+}
+
+
+/* =========================================================
+   DIRECTION TYPOGRAPHIQUE — PASSION ONE
+   Display massif + interface très lisible
+   ========================================================= */
+:root{
+  --display:"Passion One", Impact, "Arial Black", sans-serif;
+  --ui:"Inter", Arial, sans-serif;
+}
+body{
+  font-family:var(--ui);
+  letter-spacing:-.012em;
+}
+
+/* Header: Passion One is the hero, not everywhere */
+.year{
+  font-family:var(--display);
+  gap:clamp(8px,1.4vw,18px);
+}
+.year strong{
+  font-family:var(--ui);
+  font-weight:900;
+  letter-spacing:-.065em;
+  line-height:.84;
+  transform:rotate(-1deg);
+}
+.year span{
+  font-family:var(--display);
+  font-weight:900;
+  letter-spacing:-.055em;
+  line-height:.72;
+  text-rendering:geometricPrecision;
+  transform:scaleX(1.055);
+  transform-origin:center;
+  padding-top:.02em;
+  padding-bottom:.09em;
+}
+
+/* Navigation remains deliberately neutral and readable */
+.theme,
+.search-toggle,
+.search-input{
+  font-family:var(--ui);
+  font-weight:900;
+  letter-spacing:-.025em;
+}
+.theme.active{
+  box-shadow:3px 3px 0 var(--pink);
+}
+.search-toggle{
+  background:var(--yellow);
+}
+
+/* Calendar object */
+.mock-title{
+  font-family:var(--display);
+  font-weight:900;
+  line-height:.72;
+  letter-spacing:-.045em;
+  text-transform:uppercase;
+}
+.kicker{
+  font-family:var(--ui);
+  font-weight:900;
+  letter-spacing:.035em;
+  text-transform:uppercase;
+}
+.details h1{
+  font-family:var(--display);
+  font-weight:900;
+  line-height:.78;
+  letter-spacing:-.045em;
+  text-transform:uppercase;
+}
+.desc{
+  font-family:var(--ui);
+  font-weight:700;
+  letter-spacing:-.018em;
+}
+.price{
+  font-family:var(--display);
+  font-weight:900;
+  line-height:.8;
+  letter-spacing:-.035em;
+}
+.info{
+  font-family:var(--ui);
+  font-weight:900;
+  letter-spacing:-.025em;
+  text-transform:none;
+}
+
+/* Arrows become graphic punctuation */
+.arrow{
+  font-family:var(--display);
+  font-weight:900;
+  line-height:1;
+}
+
+/* The affiliation/legal line should disappear visually until needed,
+   but remain perfectly readable. */
+.footer{
+  font-family:var(--ui);
+  letter-spacing:-.018em;
+}
+
+/* Desktop proportions */
+@media (min-width:721px){
+  .year span{
+    font-size:clamp(2.15rem,5.65vw,5rem);
+  }
+  .year strong{
+    font-size:clamp(.68rem,1.15vw,.94rem);
+  }
+  .mock-title{
+    font-size:clamp(2.6rem,5.7vw,5.35rem);
+  }
+  .details h1{
+    font-size:clamp(2.35rem,4.6vw,4.25rem);
+  }
+  .price{
+    font-size:clamp(1.65rem,3vw,2.5rem);
+  }
+}
+
+/* Phone: preserve impact without stealing height */
+@media (max-width:720px){
+  .year{
+    gap:6px;
+  }
+  .year span{
+    font-size:clamp(1.28rem,6.9vw,1.82rem);
+    line-height:.72;
+    transform:scaleX(1.03);
+    border-bottom-width:3px;
+  }
+  .year strong{
+    font-size:clamp(.44rem,2.35vw,.62rem);
+    padding:.42em .5em .38em;
+  }
+  .mock-title{
+    font-size:clamp(1.82rem,9.8vw,2.85rem);
+  }
+  .details h1{
+    font-size:clamp(1.28rem,6.3vw,1.95rem)!important;
+    line-height:.76;
+  }
+  .price{
+    font-size:clamp(1.08rem,5.5vw,1.5rem);
+  }
+}
+
+/* Short screens: keep the display type bold, not oversized */
+@media (max-height:650px){
+  .year span{
+    font-size:clamp(1rem,4.6vh,1.48rem);
+  }
+  .year strong{
+    font-size:clamp(.39rem,1.65vh,.52rem);
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brandline">
+      <div class="year"><strong>CALENDRIERS<br>DE L’AVENT</strong><span>EN ATTENDANT LE 25</span></div>
+    </div>
+    <div class="filterline">
+      <nav class="themes" aria-label="Thèmes">
+        <button class="theme active" data-theme="Tous">Tous</button>
+        <button class="theme" data-theme="Beauté">Beauté</button>
+        <button class="theme" data-theme="Geek">Geek</button>
+        <button class="theme" data-theme="Food">Food</button>
+        <button class="theme" data-theme="Luxe">Luxe</button>
+        <button class="theme" data-theme="Original">Original</button>
+      </nav>
+      <div class="searchbox" id="searchBox"><button class="search-toggle" id="searchToggle" type="button" aria-expanded="false">⌕ Recherche</button><input class="search-input" id="searchInput" type="search" placeholder="mot-clé…" aria-label="Rechercher un calendrier par mot-clé"></div>
+    </div>
+  </header>
+
+  <main class="stage">
+    <button class="arrow prev" id="prev" aria-label="Calendrier précédent">←</button>
+    <article class="card" id="card">
+      <a class="visual beauty" id="visualLink" href="https://www.amazon.fr/" target="_blank" rel="sponsored noopener">
+        <div class="mock" id="mock">
+          <div class="mock-title" id="mockTitle">PINK<br>RITUALS</div>
+          <div class="doors" id="doors"></div>
+        </div>
+      </a>
+      <section class="details">
+        <div class="kicker" id="kicker">BEAUTÉ • COCOONING</div>
+        <h1 id="title">Pink Rituals</h1>
+        <p class="desc" id="desc">Un calendrier beauté très cadeau, graphique et généreux, pensé pour celles et ceux qui aiment transformer décembre en rituel quotidien.</p>
+        <div class="price" id="price">79,90 €</div>
+        <a class="info" id="infoLink" href="https://www.amazon.fr/" target="_blank" rel="sponsored noopener">+ d'info ↗</a>
+      </section>
+    </article>
+    <button class="arrow next" id="next" aria-label="Calendrier suivant">→</button>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-left">© 2026 <a href="https://www.facebook.com/share/1NkDQMH28N/?mibextid=wwXIfr" target="_blank" rel="noopener">Trucs Bien</a></div>
+    <div class="footer-right">* Liens affiliés : même prix pour vous, le créateur du site peut être récompensé.</div>
+  </footer>
+</div>
+
+<script>
+const calendars=[
+  {
+    theme:'Beauté', title:'Pink Rituals', kicker:'BEAUTÉ • COCOONING', price:'79,90 €',
+    badge:'BEST GIFT ✦', mockTitle:'PINK<br>RITUALS', visual:'beauty', dark:false,
+    desc:'Un calendrier beauté très cadeau, graphique et généreux, pensé pour celles et ceux qui aiment transformer décembre en rituel quotidien.',
+    url:'https://www.amazon.fr/'
+  },
+  {
+    theme:'Geek', title:'Pixel Quest', kicker:'GEEK • COLLECTOR', price:'64,00 €',
+    badge:'NERD APPROVED', mockTitle:'PIXEL<br>QUEST', visual:'geek', dark:true,
+    desc:'Une version plus inattendue pour les fans de jeux, mini-objets et collections, avec un vrai contraste visuel et un esprit arcade.',
+    url:'https://www.amazon.fr/'
+  }
+];
+
+const doors=document.getElementById('doors');
+[1,7,13,4,18,22,9,2,15,24,6,20,11,3,17,8,14,5].forEach(n=>{const i=document.createElement('i');i.textContent=n;doors.appendChild(i)});
+
+let filtered=[...calendars], index=0;
+const visual=document.getElementById('visualLink'), mock=document.getElementById('mock');
+const title=document.getElementById('title'), kicker=document.getElementById('kicker'), price=document.getElementById('price');
+const mockTitle=document.getElementById('mockTitle'), desc=document.getElementById('desc'), info=document.getElementById('infoLink');
+
+function render(){
+  const c=filtered[index] || calendars[0];
+  visual.className='visual '+c.visual;
+  mock.className='mock'+(c.dark?' dark':'');
+  title.textContent=c.title; kicker.textContent=c.kicker; price.textContent=c.price;
+  mockTitle.innerHTML=c.mockTitle; desc.textContent=c.desc;
+  visual.href=c.url; info.href=c.url;
+}
+function move(step){index=(index+step+filtered.length)%filtered.length;render()}
+document.getElementById('prev').onclick=()=>move(-1);
+document.getElementById('next').onclick=()=>move(1);
+
+const searchBox=document.getElementById('searchBox'),searchToggle=document.getElementById('searchToggle'),searchInput=document.getElementById('searchInput');
+searchToggle.addEventListener('click',()=>{const open=searchBox.classList.toggle('open');searchToggle.setAttribute('aria-expanded',open);if(open)setTimeout(()=>searchInput.focus(),180)});
+searchInput.addEventListener('input',()=>{const q=searchInput.value.trim().toLocaleLowerCase('fr');filtered=!q?[...calendars]:calendars.filter(c=>[c.theme,c.title,c.kicker,c.desc,c.mockTitle.replace(/<br>/g,' ')].join(' ').toLocaleLowerCase('fr').includes(q));if(!filtered.length)filtered=[...calendars];index=0;render();document.querySelectorAll('.theme').forEach(b=>b.classList.toggle('active',b.dataset.theme==='Tous'))});
+
+document.querySelectorAll('.theme').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.theme').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  searchInput.value='';
+  const t=btn.dataset.theme;
+  filtered=t==='Tous'?[...calendars]:calendars.filter(c=>c.theme===t);
+  if(!filtered.length) filtered=[...calendars];
+  index=0; render();
+}));
+
+window.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')move(-1);if(e.key==='ArrowRight')move(1)});
+let x=null;
+window.addEventListener('touchstart',e=>x=e.touches[0].clientX,{passive:true});
+window.addEventListener('touchend',e=>{if(x===null)return;const dx=e.changedTouches[0].clientX-x;if(Math.abs(dx)>55)move(dx<0?1:-1);x=null},{passive:true});
+render();
+</script>
+
+<script>
+(function(){
+  function fitViewport(){
+    document.documentElement.style.setProperty('--vh', (window.innerHeight*0.01)+'px');
+    document.documentElement.style.overflow='hidden';
+    document.body.style.overflow='hidden';
+  }
+  fitViewport();
+  window.addEventListener('resize',fitViewport,{passive:true});
+  window.addEventListener('orientationchange',fitViewport,{passive:true});
+})();
+</script>
+
+</body>
+</html>
