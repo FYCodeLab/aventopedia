@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<title>Calendriers de l'Avent 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=Passion+One:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #17151d;
+  --paper: #fbf5e8;
+  --cream: #fffaf5;
+  --yellow: #ffd84d;
+  --pink: #ff78aa;
+  --violet: #6f5cff;
+  --mint: #a8e6cf;
+  --border: 3px solid var(--ink);
+  --shadow: 6px 6px 0 var(--ink);
+  --display: "Passion One", Impact, "Arial Black", sans-serif;
+  --ui: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  width: 100vw;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden !important;
+  overscroll-behavior: none;
+  position: fixed;
+  inset: 0;
+}
+
+body {
+  color: var(--ink);
+  background:
+    linear-gradient(rgba(20,33,61,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20,33,61,.05) 1px, transparent 1px), var(--paper);
+  background-size: 24px 24px;
+  font-family: var(--ui);
+  letter-spacing: -.012em;
+  user-select: none;
+}
+
+button, a { -webkit-tap-highlight-color: transparent; }
+button { font: inherit; color: inherit; border: none; background: none; }
+
+.app {
+  width: 100vw;
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+  position: relative;
+}
+
+/* --- Header --- */
+.topbar {
+  padding: clamp(6px, 1.2vh, 10px) 10px 4px;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  z-index: 50;
+}
+
+.brandline { display: block; min-width: 0; }
+.year {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: var(--display);
+  text-transform: uppercase;
+}
+.year strong {
+  font-family: var(--ui);
+  font-size: clamp(.6rem, 1vw, .85rem);
+  font-weight: 900;
+  line-height: .9;
+  letter-spacing: -.04em;
+  background: var(--yellow);
+  border: 2px solid var(--ink);
+  padding: .3em .5em;
+  box-shadow: 3px 3px 0 var(--ink);
+  transform: rotate(-1.2deg);
+  white-space: nowrap;
+}
+.year span {
+  font-family: var(--display);
+  font-size: clamp(1.2rem, 4vw, 3rem);
+  line-height: .8;
+  letter-spacing: -.04em;
+  text-align: right;
+  border-bottom: 3px solid var(--pink);
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+/* Navigation & Search */
+.filterline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  position: relative;
+}
+
+.themes {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 0;
+  align-items: center;
+}
+.themes::-webkit-scrollbar { display: none; }
+
+.theme {
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--cream);
+  padding: 3px 6px;
+  font-family: var(--ui);
+  font-weight: 800;
+  font-size: clamp(.52rem, 1.4vw, .68rem);
+  line-height: 1.05;
+  text-align: center;
+  white-space: normal;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--ink);
+  transition: all 0.12s ease;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.theme:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--ink); }
+.theme.active {
+  background: var(--ink);
+  color: #fff;
+  box-shadow: 2px 2px 0 var(--pink);
+}
+
+.filterline.searching .themes { display: none; }
+
+.search-toggle {
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--pink);
+  padding: 4px 10px;
+  font-weight: 900;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--ink);
+  white-space: nowrap;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  transition: all 0.12s ease;
+}
+.search-toggle.active {
+  background: var(--ink);
+  color: #fff;
+  box-shadow: 2px 2px 0 var(--pink);
+}
+.filterline.searching .search-toggle { display: none; }
+
+.search-form-container {
+  display: none;
+  flex: 1;
+  position: relative;
+  min-width: 0;
+}
+.filterline.searching .search-form-container {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-family: var(--ui);
+  font-weight: 800;
+  font-size: 0.75rem;
+  outline: none;
+  background: #fff;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.close-search {
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--yellow);
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 0.75rem;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--ink);
+  flex: 0 0 auto;
+}
+
+.search-results-list {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--cream);
+  border: var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 6px;
+  z-index: 100;
+  max-height: 220px;
+  overflow-y: auto;
+  flex-direction: column;
+  gap: 4px;
+}
+.filterline.searching .search-results-list { display: flex; }
+
+.search-result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1.5px solid var(--ink);
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-decoration: none;
+  color: inherit;
+}
+.search-result-item:hover { background: var(--yellow); }
+.search-result-item .item-price { font-weight: 900; color: var(--violet); }
+
+/* --- Main Stage --- */
+.stage {
+  position: relative;
+  min-height: 0;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.card {
+  width: 100vw;
+  max-width: 100%;
+  height: 100%;
+  max-height: 620px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(200px, 0.75fr);
+  border: var(--border);
+  border-left: none;
+  border-right: none;
+  background: var(--cream);
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+}
+
+.visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: var(--border);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  padding: 12px;
+  min-width: 0;
+  min-height: 0;
+  background: linear-gradient(135deg, #ff77aa, #ffab90);
+}
+
+.visual-img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  border: 3px solid var(--ink);
+  box-shadow: 5px 5px 0 var(--ink);
+  border-radius: 12px;
+  background: #fff;
+}
+
+/* Détails */
+.details {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: clamp(10px, 2vw, 18px);
+  min-width: 0;
+  background: var(--cream);
+}
+
+.kicker {
+  display: inline-block;
+  width: max-content;
+  max-width: 100%;
+  border: 1.5px solid var(--ink);
+  background: var(--mint);
+  padding: 2px 6px;
+  font-size: 0.55rem;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  margin-top: 0;
+  margin-bottom: 6px;
+  transform: rotate(-1deg);
+  box-shadow: 1.5px 1.5px 0 var(--ink);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+h1 {
+  font-family: var(--display);
+  font-size: clamp(1.1rem, 2.2vw, 1.8rem);
+  line-height: .95;
+  letter-spacing: -.03em;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+}
+
+.desc {
+  font-size: clamp(.6rem, 0.95vw, .72rem);
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.price {
+  font-family: var(--display);
+  font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+  line-height: .85;
+  margin-bottom: 10px;
+  color: var(--ink);
+}
+
+.info {
+  align-self: flex-start;
+  text-decoration: none;
+  border: 2px solid var(--ink);
+  background: var(--violet);
+  color: white;
+  box-shadow: 3px 3px 0 var(--ink);
+  padding: 6px 12px;
+  font-weight: 900;
+  font-size: 0.7rem;
+  border-radius: 999px;
+  transition: .12s ease;
+}
+.info:hover {
+  transform: translate(1px, 1px);
+  box-shadow: 1.5px 1.5px 0 var(--ink);
+  background: var(--pink);
+}
+
+/* Flèches intégrées */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  width: 34px;
+  height: 34px;
+  border: 2.5px solid var(--ink);
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: 2px 2px 0 var(--ink);
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-size: 1rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.arrow:hover {
+  transform: translateY(-50%) translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+.arrow.prev { left: 4px; }
+.arrow.next { right: 4px; }
+
+/* --- Footer --- */
+.footer {
+  padding: 4px 10px calc(4px + env(safe-area-inset-bottom));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: clamp(.45rem, .8vw, .55rem);
+  opacity: 0.8;
+  width: 100%;
+}
+.footer-left { text-align: left; }
+.footer-right { text-align: right; }
+.footer a { color: inherit; text-decoration: underline; font-weight: 900; }
+
+@media (max-width: 720px) {
+  .topbar { padding: 4px 6px 2px; }
+  
+  .stage { padding: 0; }
+  .card {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+    border-radius: 0;
+  }
+  .visual { border-right: 0; border-bottom: var(--border); padding: 6px; }
+  
+  .details {
+    padding: 8px 10px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "kicker price"
+      "title price"
+      "desc info";
+    gap: 4px 6px;
+    align-items: center;
+  }
+  .kicker {
+    grid-area: kicker;
+    margin: 0 0 2px 0;
+    font-size: .48rem;
+    padding: 2px 5px;
+    align-self: start;
+  }
+  h1 { grid-area: title; font-size: clamp(.85rem, 3.8vw, 1.1rem) !important; margin: 0; line-height: .9; }
+  .desc { grid-area: desc; font-size: clamp(.45rem, 1.7vw, .55rem); line-height: 1.1; margin: 0; }
+  .price { grid-area: price; margin: 0; font-size: clamp(.8rem, 3.5vw, 1rem); text-align: right; }
+  .info { grid-area: info; padding: 4px 8px; font-size: .5rem; border-width: 1.5px; box-shadow: 1.5px 1.5px 0 var(--ink); white-space: nowrap; }
+  
+  .arrow { width: 30px; height: 30px; font-size: .85rem; border-width: 2px; }
+  .arrow.prev { left: 4px; }
+  .arrow.next { right: 4px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brandline">
+      <div class="year"><strong>CALENDRIERS DE L’AVENT</strong><span>EN ATTENDANT LE 25</span></div>
+    </div>
+    <div class="filterline" id="filterline">
+      <nav class="themes" aria-label="Thèmes">
+        <button class="theme active" data-theme="Tous">Tous</button>
+        <button class="theme" data-theme="Jouets & Culture">Jouets &<br>Culture</button>
+        <button class="theme" data-theme="Food">Food</button>
+        <button class="theme" data-theme="Créatif & Maison">Créatif &<br>Maison</button>
+        <button class="theme" data-theme="Beauté & Bien-être">Beauté &<br>Bien-être</button>
+      </nav>
+      
+      <button class="search-toggle" id="searchToggle" type="button" aria-label="Recherche">🔍</button>
+      
+      <div class="search-form-container">
+        <input class="search-input" id="searchInput" type="search" placeholder="Rechercher..." aria-label="Rechercher un calendrier">
+        <button class="close-search" id="closeSearch" type="button" aria-label="Fermer la recherche">✕</button>
+        <div class="search-results-list" id="searchResultsList"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="stage">
+    <button class="arrow prev" id="prev" aria-label="Calendrier précédent">←</button>
+    <article class="card" id="card">
+      <a class="visual" id="visualLink" href="#" target="_blank" rel="sponsored noopener">
+        <img class="visual-img" id="visualImg" src="" alt="Photo Calendrier">
+      </a>
+      <section class="details">
+        <div class="kicker" id="kicker">THÈME</div>
+        <h1 id="title">Titre</h1>
+        <p class="desc" id="desc">Description...</p>
+        <div class="price" id="price">0,00 €</div>
+        <a class="info" id="infoLink" href="#" target="_blank" rel="sponsored noopener">Voir le produit ↗</a>
+      </section>
+    </article>
+    <button class="arrow next" id="next" aria-label="Calendrier suivant">→</button>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-left">© 2026 <a href="https://www.facebook.com/share/1NkDQMH28N/?mibextid=wwXIfr" target="_blank" rel="noopener">Trucs Bien</a></div>
+    <div class="footer-right">* Liens affiliés Amazon</div>
+  </footer>
+</div>
+
+<script>
+const calendars = [
+  { mainTheme: 'Jouets & Culture', theme: 'Jouets & Enfants', title: 'Train magnétique', desc: 'Un calendrier de l\'Avent train magnétique avec 24 wagons.', price: '39,99 €', url: 'https://amzn.to/4r6Ucpy', img: 'assets/IMG_3714.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Pop Culture & Geek', title: 'Pokémon', desc: 'Un calendrier de l\'Avent Pokémon avec figurines Funko à collectionner.', price: '29,99 €', url: 'https://amzn.to/3VtNGxh', img: 'assets/IMG_3712.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'LEGO & Construction', title: 'Lego Noël (LEGO City 2023)', desc: 'Un calendrier de l\'Avent LEGO City avec 24 surprises, incluant des minifigurines et des accessoires.', price: '49,49 €', url: 'https://amzn.to/4gfOAnb', img: 'assets/IMG_3717.jpeg' },
+  { mainTheme: 'Créatif & Maison', theme: 'Science & Découverte', title: 'Gemmes (National Geographic)', desc: 'Un calendrier de l\'Avent National Geographic avec 24 pierres précieuses à collectionner.', price: 'Non précisé', url: 'https://amzn.to/3XC22KK', img: 'assets/IMG_3713.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Jouets & Enfants', title: 'Polly Pocket', desc: 'Un calendrier de l\'Avent Polly Pocket avec une maison en pain d\'épices et 24 surprises.', price: '39,90 €', url: 'https://amzn.to/3XmlQ2a', img: 'assets/IMG_3712.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Jouets & Enfants', title: 'Polly Pocket Mignon', desc: 'Un calendrier Polly Pocket mignon.', price: '39,80 €', url: 'https://amzn.to/4dulcJV', img: 'assets/IMG_3714.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'LEGO & Construction', title: 'Lego Star Wars', desc: 'Un calendrier de l\'Avent LEGO Star Wars avec 18 constructions à collectionner.', price: '67,90 €', url: 'https://amzn.to/4d11jHF', img: 'assets/IMG_3717.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Pop Culture & Séries', title: 'Mercredi (Wednesday)', desc: 'Un calendrier de l\'Avent Mercredi Addams avec 24 surprises inspirées de la série Netflix.', price: '25,95 €', url: 'https://amzn.to/3z3c6mK', img: 'assets/IMG_3713.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'LEGO & Construction', title: 'Lego Harry Potter', desc: 'Un calendrier de l\'Avent LEGO Harry Potter.', price: '44,50 €', url: 'https://amzn.to/46i3F3V', img: 'assets/IMG_3712.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Pop Culture & Figurines', title: 'Funko Star Wars', desc: 'Un calendrier de l\'Avent Funko Bitty Pop! Star Wars avec 24 mini-figurines en vinyle.', price: '30,00 €', url: 'https://amzn.to/4r5OTXk', img: 'assets/IMG_3714.jpeg' },
+  { mainTheme: 'Créatif & Maison', theme: 'Jardinage & Nature', title: 'Graines', desc: 'Pour votre potager 2027.', price: '33,29 €', url: 'https://amzn.to/4rermDY', img: 'assets/IMG_3717.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Jouets & Enfants', title: 'Playmobil Animaux (Wiltopia)', desc: 'Un calendrier de l\'Avent Playmobil Wiltopia avec 24 surprises sur le thème des animaux du monde.', price: '54,98 €', url: 'https://amzn.to/4AquEYW', img: 'assets/IMG_3713.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'LEGO & Construction', title: 'Lego Disney Princesses', desc: 'Un calendrier de l\'Avent LEGO Disney Princess 2024 avec 5 micro-poupées et des constructions miniatures.', price: '34,99 €', url: 'https://amzn.to/3VbNbYC', img: 'assets/IMG_3714.jpeg' },
+  { mainTheme: 'Créatif & Maison', theme: 'Maison & Cocooning', title: 'Bougies parfumées', desc: 'Un calendrier de l\'Avent avec 25 bougies parfumées dans des pots en verre.', price: '22,99 €', url: 'https://amzn.to/4r6RqAE', img: 'assets/IMG_3712.jpeg' },
+  { mainTheme: 'Créatif & Maison', theme: 'Animaux & DIY', title: 'DIY pour chats', desc: 'Un calendrier de l\'Avent BRUBAKER à remplir soi-même avec 24 tiroirs pour friandises ou surprises.', price: '14,99 €', url: 'https://amzn.to/3ZdNyC6', img: 'assets/IMG_3717.jpeg' },
+  { mainTheme: 'Food', theme: 'Gastronomie & Épices', title: 'Chili Piment', desc: 'Un calendrier de l\'Avent gourmand avec 24 sauces piquantes à découvrir chaque jour.', price: '44,99 €', url: 'https://amzn.to/3Xdrche', img: 'assets/IMG_3713.jpeg' },
+  { mainTheme: 'Food', theme: 'Thé & Bien-être', title: 'Yogi Tea', desc: 'Un calendrier de l\'Avent Yogi Tea avec 24 infusions bio ayurvédiques.', price: '17,99 €', url: 'https://amzn.to/3Xow5Ev', img: 'assets/IMG_3712.jpeg' },
+  { mainTheme: 'Créatif & Maison', theme: 'Loisirs & Passion', title: 'Pêcheur', desc: 'Un calendrier de l\'Avent pêcheur avec 24 surprises (canne à pêche, leurres, accessoires).', price: '27,99 €', url: 'https://amzn.to/46RMIxo', img: 'assets/IMG_3714.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Jouets & Enfants', title: 'Barbie', desc: 'Un calendrier de l\'Avent Barbie avec 24 surprises (poupées, accessoires, vêtements).', price: '42,59 €', url: 'https://amzn.to/46XhOng', img: 'assets/IMG_3717.jpeg' },
+  { mainTheme: 'Créatif & Maison', theme: 'Jeux & Réflexion', title: 'Casse-tête', desc: 'Un calendrier de l\'Avent casse-tête avec 24 énigmes en métal et bois.', price: '24,98 €', url: 'https://amzn.to/3MGQsYI', img: 'assets/IMG_3713.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Pop Culture & Magic', title: 'Harry Potter Phosphorescent', desc: 'Un calendrier de l\'Avent Harry Potter phosphorescent avec 24 surprises.', price: '43,43 €', url: 'https://amzn.to/3XACLR4', img: 'assets/IMG_3712.jpeg' },
+  { mainTheme: 'Food', theme: 'Gastronomie & Gourmandise', title: 'Produits de Terroir', desc: 'Un calendrier de l\'Avent Produits de Terroir avec 24 spécialités régionales françaises.', price: '51,35 €', url: 'https://amzn.to/4r5k6dk', img: 'assets/IMG_3714.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Jouets & Rétro Cinema', title: 'Playmobil Retour vers le futur', desc: 'Un calendrier de l\'Avent Playmobil retour vers le futur avec 24 personnages.', price: '49,00 €', url: 'https://amzn.to/3Top0Wq', img: 'assets/IMG_3717.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Pop Culture & Dinosaures', title: 'Jurassic World', desc: 'Un calendrier de l\'Avent Jurassic World avec 24 surprises (dinosaures, accessoires).', price: '34,99 €', url: 'https://amzn.to/4gKL8TS', img: 'assets/IMG_3713.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Gaming & Nintendo', title: 'Mario', desc: 'Un calendrier de l\'Avent Mario avec 24 surprises (figurines, accessoires).', price: '18,98 €', url: 'https://amzn.to/3To0BqA', img: 'assets/IMG_3712.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Musique & Pop Culture', title: 'Kpop Baby Monster', desc: 'Un calendrier de l\'Avent Kpop Baby Monster avec 24 surprises.', price: '19,98 €', url: 'https://amzn.to/4xjuPlS', img: 'assets/IMG_3714.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Humour & Bain', title: 'Canards de bain', desc: 'Un calendrier de l\'Avent canards de bain avec 24 canards en caoutchouc colorés.', price: '17,98 €', url: 'https://amzn.to/4gQu3I7', img: 'assets/IMG_3717.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Humour & Jeunesse', title: 'Monsieur Madame', desc: 'Un calendrier de l\'Avent Monsieur Madame avec des surprises humoristiques.', price: '22,90 €', url: 'https://amzn.to/4yBwYul', img: 'assets/IMG_3713.jpeg' },
+  { mainTheme: 'Food', theme: 'Chocolat & Friandises', title: 'Kinder Édition Spéciale', desc: 'Un calendrier de l\'Avent Kinder Édition Spéciale avec 24 surprises.', price: '19,99 €', url: 'https://amzn.to/4irVdGG', img: 'assets/IMG_3712.jpeg' },
+  { mainTheme: 'Food', theme: 'Gastronomie & Apéro', title: 'Saucissons secs', desc: 'Un calendrier de l\'Avent saucissons avec une sélection de saucissons délicieux.', price: '34,90 €', url: 'https://amzn.to/46iMdwf', img: 'assets/IMG_3714.jpeg' },
+  { mainTheme: 'Food', theme: 'Chocolat & Friandises', title: 'Côte d’or', desc: 'Un calendrier de l\'Avent Cote d’Or Assortiment avec 24 chocolats variés.', price: '12,69 €', url: 'https://amzn.to/3SXGzMY', img: 'assets/IMG_3717.jpeg' },
+  { mainTheme: 'Food', theme: 'Chocolat & Friandises', title: 'Lindt ours', desc: 'Un calendrier de l\'Avent Lindt avec 24 ours en chocolat.', price: '24,56 €', url: 'https://amzn.to/4yAC4H1', img: 'assets/IMG_3713.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Pop Culture & Séries', title: 'Friends Officiel', desc: 'Un calendrier de l\'Avent Friends Officiel avec 24 surprises inspirées de la série.', price: '22,58 €', url: 'https://amzn.to/4yuQgBu', img: 'assets/IMG_3712.jpeg' },
+  { mainTheme: 'Food', theme: 'Alcools & Spiritueux', title: 'Rhum', desc: 'Un calendrier Rhum avec 24 échantillons à déguster avec modération.', price: '90,00 €', url: 'https://amzn.to/4xst327', img: 'assets/IMG_3714.jpeg' },
+  { mainTheme: 'Créatif & Maison', theme: 'Loisirs Créatifs & DIY', title: 'À Faire Soi-Même', desc: 'Un calendrier de l\'Avent DIY avec 24 cases à remplir soi-même.', price: '17,99 €', url: 'https://amzn.to/4Ac2ZdQ', img: 'assets/IMG_3717.jpeg' },
+  { mainTheme: 'Créatif & Maison', theme: 'Loisirs Créatifs & Bricolage', title: 'Faire Soi-Même en Bois', desc: 'Un calendrier de l\'Avent en bois à monter soi-même avec 24 pièces.', price: '25,08 €', url: 'https://amzn.to/4gR7y5T', img: 'assets/IMG_3713.jpeg' },
+  { mainTheme: 'Créatif & Maison', theme: 'Tradition & Décoration', title: 'Crèche en Bois', desc: 'Une crèche en bois à remplir avec 24 cases.', price: '27,95 €', url: 'https://amzn.to/4is1O3Q', img: 'assets/IMG_3712.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Maquettes & Transport', title: 'Aviation', desc: 'Un calendrier de l\'Avent aviation avec 24 avions miniatures.', price: '12,98 €', url: 'https://amzn.to/46G2dZr', img: 'assets/IMG_3714.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Figurines & Collection', title: 'Harry Potter Schleich', desc: 'Un calendrier de l\'Avent Harry Potter par Schleich avec 24 figurines.', price: '36,79 €', url: 'https://amzn.to/4Aahmzl', img: 'assets/IMG_3717.jpeg' },
+  { mainTheme: 'Jouets & Culture', theme: 'Humour & Insolite', title: 'Activités WC', desc: 'Un calendrier de l\'Avent humoristique sur le thème des activités à faire aux WC.', price: '5,99 €', url: 'https://amzn.to/4gQy6UT', img: 'assets/IMG_3713.jpeg' },
+  { mainTheme: 'Créatif & Maison', theme: 'High-Tech & Science', title: 'Électronique', desc: 'Un calendrier de l\'Avent électronique.', price: '17,99 €', url: 'https://amzn.to/46hnsR3', img: 'assets/IMG_3712.jpeg' },
+  { mainTheme: 'Créatif & Maison', theme: 'Espace & Science', title: 'Fusées Espace', desc: 'Un calendrier de l\'Avent avec un kit de fusées spatiales.', price: '15,59 €', url: 'https://amzn.to/4h4NnjE', img: 'assets/IMG_3714.jpeg' },
+  { mainTheme: 'Créatif & Maison', theme: 'Décoration de Noël', title: 'Mini Sapin', desc: 'Un calendrier de l\'Avent avec un mini sapin de Noël décoratif.', price: '29,99 €', url: 'https://amzn.to/4h0T6XQ', img: 'assets/IMG_3717.jpeg' },
+  { mainTheme: 'Beauté & Bien-être', theme: 'Beauté & Maquillage', title: 'L’Oréal', desc: 'Un calendrier de l\'Avent L’Oréal (soins, maquillage ou parfum).', price: '89,99 €', url: 'https://amzn.to/4xqKmAC', img: 'assets/IMG_3713.jpeg' },
+  { mainTheme: 'Beauté & Bien-être', theme: 'Beauté & Maquillage', title: 'Maybelline', desc: 'Un calendrier de l\'Avent Maybelline (maquillage, soins ou accessoires).', price: '79,90 €', url: 'https://amzn.to/4AbUPlU', img: 'assets/IMG_3712.jpeg' },
+  { mainTheme: 'Food', theme: 'Thé & Infusions', title: 'Kusmi Tea', desc: 'Une sélection de thés Kusmi Tea.', price: '27,90 €', url: 'https://amzn.to/3ULLmSc', img: 'assets/IMG_3714.jpeg' },
+  { mainTheme: 'Créatif & Maison', theme: 'Loisirs Créatifs & Couture', title: 'Point de croix', desc: 'Chaque jour faites un nouveau point de croix.', price: '14,99 €', url: 'https://amzn.to/4xVp3rZ', img: 'assets/IMG_3717.jpeg' },
+  { mainTheme: 'Food', theme: 'Gastronomie & Cuisine', title: 'Épices', desc: 'Découvrez chaque jour une nouvelle épice.', price: 'Non précisé', url: 'https://amzn.to/3UKnDSp', img: 'assets/IMG_3713.jpeg' },
+  { mainTheme: 'Créatif & Maison', theme: 'Loisirs Créatifs & DIY', title: 'Crochet', desc: 'Chaque jour faites un objet en crochet.', price: '28,77 €', url: 'https://amzn.to/4gV35xG', img: 'assets/IMG_3712.jpeg' },
+  { mainTheme: 'Beauté & Bien-être', theme: 'Beauté & Soins', title: 'L\'Occitane', desc: 'Parfums et produits de beauté d’exception.', price: '99,00 €', url: 'https://amzn.to/4dxXmgo', img: 'assets/IMG_3714.jpeg' }
+];
+
+let filtered = [...calendars], index = 0;
+let currentSearchResults = [];
+
+const visualLink = document.getElementById('visualLink');
+const visualImg = document.getElementById('visualImg');
+const title = document.getElementById('title');
+const kicker = document.getElementById('kicker');
+const price = document.getElementById('price');
+const desc = document.getElementById('desc');
+const infoLink = document.getElementById('infoLink');
+
+function render() {
+  const c = filtered[index] || calendars[0];
+  visualImg.src = c.img;
+  visualImg.alt = c.title;
+  title.textContent = c.title;
+  kicker.textContent = c.theme;
+  price.textContent = c.price;
+  desc.textContent = c.desc;
+  visualLink.href = c.url;
+  infoLink.href = c.url;
+}
+
+function move(step) {
+  if (!filtered.length) return;
+  index = (index + step + filtered.length) % filtered.length;
+  render();
+}
+
+document.getElementById('prev').onclick = () => move(-1);
+document.getElementById('next').onclick = () => move(1);
+
+const filterline = document.getElementById('filterline');
+const searchToggle = document.getElementById('searchToggle');
+const closeSearch = document.getElementById('closeSearch');
+const searchInput = document.getElementById('searchInput');
+const searchResultsList = document.getElementById('searchResultsList');
+
+searchToggle.addEventListener('click', () => {
+  filterline.classList.add('searching');
+  searchInput.focus();
+  updateSearchResults();
+});
+
+closeSearch.addEventListener('click', () => {
+  filterline.classList.remove('searching');
+  searchInput.value = '';
+});
+
+function updateSearchResults() {
+  const q = searchInput.value.trim().toLowerCase();
+  currentSearchResults = calendars.filter(c => 
+    [c.theme, c.mainTheme, c.title, c.desc].join(' ').toLowerCase().includes(q)
+  );
+
+  searchResultsList.innerHTML = '';
+  if (currentSearchResults.length === 0) {
+    searchResultsList.innerHTML = '<div style="font-size:0.65rem; padding:6px; opacity:0.75">Aucun résultat trouvé</div>';
+    return;
+  }
+
+  currentSearchResults.forEach((c, i) => {
+    const item = document.createElement('div');
+    item.className = 'search-result-item';
+    item.innerHTML = `<span>${c.title} (${c.theme})</span> <span class="item-price">${c.price}</span>`;
+    item.onclick = () => {
+      // Conserve toute la liste de recherche pour la navigation avec les flèches
+      filtered = [...currentSearchResults];
+      index = i;
+      render();
+      
+      // Activer le bouton de recherche (loupe) comme thème actif
+      document.querySelectorAll('.theme').forEach(b => b.classList.remove('active'));
+      searchToggle.classList.add('active');
+      
+      filterline.classList.remove('searching');
+    };
+    searchResultsList.appendChild(item);
+  });
+}
+
+searchInput.addEventListener('input', updateSearchResults);
+
+document.querySelectorAll('.theme').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('.theme').forEach(b => b.classList.remove('active'));
+  searchToggle.classList.remove('active');
+  btn.classList.add('active');
+  const t = btn.dataset.theme;
+  filtered = t === 'Tous' ? [...calendars] : calendars.filter(c => c.mainTheme === t);
+  if (!filtered.length) filtered = [...calendars];
+  index = 0;
+  render();
+}));
+
+window.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') move(-1);
+  if (e.key === 'ArrowRight') move(1);
+});
+
+let x = null;
+window.addEventListener('touchstart', e => x = e.touches[0].clientX, {passive: true});
+window.addEventListener('touchend', e => {
+  if (x === null) return;
+  const dx = e.changedTouches[0].clientX - x;
+  if (Math.abs(dx) > 45) move(dx < 0 ? 1 : -1);
+  x = null;
+}, {passive: true});
+
+render();
+</script>
+
+</body>
+</html>
